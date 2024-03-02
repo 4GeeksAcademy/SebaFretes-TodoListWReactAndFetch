@@ -9,6 +9,7 @@ const ToDoApi = () => {
 		done: false,
 	});
 	const [list, setList] = useState([])
+	const [hoveredIndex, setHoveredIndex] = useState(null);
 
 	const getList = async () => {
 		try {
@@ -106,6 +107,15 @@ const ToDoApi = () => {
 		}
 
 	}
+
+	const handleMouseEnter = (index) => {
+		setHoveredIndex(index);
+	}
+
+	const handleMouseLeave = () => {
+		setHoveredIndex(null);
+	}
+
 	useEffect(() => {
 		getList();
 	}, []);
@@ -119,9 +129,10 @@ const ToDoApi = () => {
 					<input type="text" placeholder="What needs to be done?" value={todo.label} onKeyUp={AddTask} onChange={handleChange}></input>
 					{
 						list.map((item, index) => {
-							return <li className="form-control" key={index} style={{ background: 'grey', margin: '0.5rem' }}>{item.label} <button onClick={() => deleteTask(index)}>Delete</button> </li>
+							return <li className="form-control" key={index} style={{ backgroundColor: hoveredIndex === index ? 'grey' : 'grey', margin: '0.5rem' }} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>{item.label} {hoveredIndex === index && (<button onClick={() => deleteTask(index)} style={{ cursor: 'pointer', border: 'none', marginLeft: '5rem', backgroundColor: '#ABEBC6' }}>X</button>)} </li>
 						})
 					}
+
 					<button onClick={deleteAll}>Delete All</button>
 					{list.length > 1 ? (<span className="d-flex align-items-start" style={{ marginLeft: '0.5rem', background: '#EBEDEF', width: '100%', marginTop: '0.5rem' }}>{list.length}items left</span>) : (<span className="d-flex align-items-start" style={{ marginLeft: '0.5rem', background: '#EBEDEF', width: '100%', marginTop: '0.5rem' }}>{list.length}item left</span>)}
 				</div>
